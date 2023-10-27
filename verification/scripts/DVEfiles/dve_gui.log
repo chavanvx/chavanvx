@@ -1,0 +1,7 @@
+The design has assertions or cover properties.
+The assertion browser can be used to view them. Click on the assertion toolbar button or use the menu 'Window->Panes->Assertion' to open it.
+The file '../sim/basic_bmc_side_rw_test.9/vcdplus.vpd' was opened successfully.
+0
+dve> add_wave {top_tb.i2c_slv1_slave0.Slave.Slave.data_received_array[2][7:0]}
+Warning: [DVDP402] 
+None of the children of the object 'top_tb.i2c_slv1_slave0.Slave.Slave.data_received_array[24691:0][7:0]' were dumped.
