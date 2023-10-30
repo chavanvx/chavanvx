@@ -25,7 +25,7 @@ class basic_bmc_side_rw_seq extends base_seq;
          data[2] = 'h77;
          data[3] = 'h88;
          s_addr = 'h5a;
-         write_eeprom(data,s_addr);
+         write_eeprom(data,s_addr,'h0);
        
         foreach (data[i])begin
 	 `uvm_info(get_name(), $sformatf("DATA_WRITTEN ..data[%h]=%h",i,data[i]), UVM_LOW)
@@ -33,7 +33,7 @@ class basic_bmc_side_rw_seq extends base_seq;
 
         len='h4;
         rdata=new[len];
-       	read_eeprom(len,s_addr,rdata);
+       	read_eeprom(len,s_addr,rdata,'h0);
 
        foreach (rdata[i])begin
   	 `uvm_info(get_name(), $sformatf("DATA_WRITTEN ..rdata[%h]=%h",i,rdata[i]), UVM_LOW)
