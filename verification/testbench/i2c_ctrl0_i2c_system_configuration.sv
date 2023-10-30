@@ -1,11 +1,11 @@
-`ifndef INC_I2C_MSTR1_I2C_SYSTEM_CONFIGURATION_SV
-`define INC_I2C_MSTR1_I2C_SYSTEM_CONFIGURATION_SV
+`ifndef INC_I2C_CTRL0_I2C_SYSTEM_CONFIGURATION_SV
+`define INC_I2C_CTRL0_I2C_SYSTEM_CONFIGURATION_SV
 
 // Specific I2C system configuration used in the environment
-class i2c_mstr1_i2c_system_configuration_c extends svt_i2c_system_configuration;
-  `svt_xvm_object_utils (i2c_mstr1_i2c_system_configuration_c)
+class i2c_ctrl0_i2c_system_configuration_c extends svt_i2c_system_configuration;
+  `svt_xvm_object_utils (i2c_ctrl0_i2c_system_configuration_c)
   
-   function new(string name="i2c_mstr1_i2c_system_configuration_c");
+   function new(string name="i2c_ctrl0_i2c_system_configuration_c");
         super.new(name);
         //Create a single I2C master agent and a single slave agent. This is
         // required as the slaves cannot be 0

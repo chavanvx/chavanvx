@@ -1,11 +1,11 @@
-`ifndef INC_I2C_SLV1_I2C_SYSTEM_CONFIGURATION_SV
-`define INC_I2C_SLV1_I2C_SYSTEM_CONFIGURATION_SV
+`ifndef INC_I2C_CTRL1_I2C_SYSTEM_CONFIGURATION_SV
+`define INC_I2C_CTRL1_I2C_SYSTEM_CONFIGURATION_SV
 
-class i2c_slv1_i2c_system_configuration_c extends svt_i2c_system_configuration;
-    `svt_xvm_object_utils (i2c_slv1_i2c_system_configuration_c)
+class i2c_ctrl1_i2c_system_configuration_c extends svt_i2c_system_configuration;
+    `svt_xvm_object_utils (i2c_ctrl1_i2c_system_configuration_c)
     int relay_addr_bit;
 
-    function new(string name="i2c_slv1_i2c_system_configuration_c");
+    function new(string name="i2c_ctrl1_i2c_system_configuration_c");
         super.new(name);
         //Create a single I2C master agent and a single slave agent. This is
         // required as the masters cannot be 0
@@ -50,13 +50,16 @@ class i2c_slv1_i2c_system_configuration_c extends svt_i2c_system_configuration;
         end
         
         // Disable master tracing and coverage
-        this.master_cfg[0].is_active                = 0;
-        this.master_cfg[0].enable_traffic_log       = 0;
-        this.master_cfg[0].enable_tracing           = 0;
+        this.master_cfg[0].is_active                = 1;
+        this.master_cfg[0].enable_traffic_log       = 1;
+        this.master_cfg[0].enable_tracing           = 1;
         this.master_cfg[0].coverage_enable          = 1'b0;
         this.master_cfg[0].toggle_coverage_enable   = 1'b0;
         this.master_cfg[0].checks_coverage_enable   = 1'b0;
         this.master_cfg[0].checks_enable            = 1'b0;
+        this.master_cfg[0].master_code = 3'b101;    // Set Master Code
+        this.master_cfg[0].enable_cci_8bit = 1;     // Enable 8-bit CCI addressing
+
     
     endfunction
 

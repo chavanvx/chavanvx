@@ -23,13 +23,13 @@
                             .I2C_SLAVE_ADDRESS(SMBUS_RELAY_ADDRESS[``INDEX_ADD_ONE]), \
                             .I2C_NVS_INST_NAME("SLV``INDEX"), \
                             .I2C_RESPOND_TO_GEN_CALL(0) \
-                           ) i2c_slv1_slave``INDEX (i2c_if_slv1);*/
+                           ) i2c_slv1_slave``INDEX (i2c_if_ctrl1);*/
  import svt_i2c_uvm_pkg::*;
    import svt_i2c_enum_pkg::*;
 
 `include "i2c_reset_if.svi" 
-`include "i2c_mstr1_i2c_system_configuration.sv"
-`include "i2c_slv1_i2c_system_configuration.sv"
+`include "i2c_ctrl0_i2c_system_configuration.sv"
+`include "i2c_ctrl1_i2c_system_configuration.sv"
 `include "virtual_sequencer.sv"
 `include "sequence_lib.svh"
 `include "tb_env.sv"
@@ -74,29 +74,29 @@ logic dut_clk;
 
 
 // Instantiate the I2C interface
-svt_i2c_if i2c_if_mstr1(system_clk);
-assign i2c_if_mstr1.RST = system_reset;
+svt_i2c_if i2c_if_ctrl0(system_clk);
+assign i2c_if_ctrl0.RST = system_reset;
 
 svt_i2c_if i2c_if_mstr2(system_clk);
 assign i2c_if_mstr2.RST = system_reset;
 
-svt_i2c_if i2c_if_slv1(system_clk);
-assign i2c_if_slv1.RST = system_reset;
+svt_i2c_if i2c_if_ctrl1(system_clk);
+assign i2c_if_ctrl1.RST = system_reset;
 
 //relay_sideband_if relay_sideband_if_1(system_clk, system_reset);
 
 // Instantiate I2C master and slave wrapper. You must define both even though
 // we only use the master
-svt_i2c_master_wrapper #(.I2C_AGENT_ID(0)) i2c_mstr0_master0 (i2c_if_mstr1);
-svt_i2c_slave_wrapper #(.I2C_AGENT_ID(0)) i2c_mstr0_slave0 (i2c_if_mstr1);
+svt_i2c_master_wrapper #(.I2C_AGENT_ID(0)) i2c_ctrl0_master0 (i2c_if_ctrl0);
+svt_i2c_slave_wrapper #(.I2C_AGENT_ID(0)) i2c_ctrl0_slave0 (i2c_if_ctrl0);
 //svt_i2c_master_wrapper #(.I2C_AGENT_ID(0)) i2c_mstr2_master0 (i2c_if_mstr2);
-//svt_i2c_slave_wrapper #(.I2C_AGENT_ID(0)) i2c_mstr1_slave0 (i2c_if_mstr1);
+//svt_i2c_slave_wrapper #(.I2C_AGENT_ID(0)) i2c_mstr1_slave0 (i2c_if_ctrl0);
 //svt_i2c_slave_wrapper #(.I2C_AGENT_ID(0)) i2c_mstr2_slave0 (i2c_if_mstr2);
 
 // Instantiate I2C master and slave wrapper. You must define both even though
 // we only use the slave
-svt_i2c_slave_wrapper #(.I2C_AGENT_ID(0)) i2c_slv1_slave0 (i2c_if_slv1);
-svt_i2c_master_wrapper #(.I2C_AGENT_ID(0)) i2c_slv1_master0 (i2c_if_slv1);
+svt_i2c_slave_wrapper #(.I2C_AGENT_ID(0)) i2c_ctrl1_slave0 (i2c_if_ctrl1);
+svt_i2c_master_wrapper #(.I2C_AGENT_ID(0)) i2c_ctrl1_master0 (i2c_if_ctrl1);
 
 // Use generate statement to instantiate slave wrapper as number of slave wrapper
 // needed is depends on NUM_RELAY_ADDRESSES setting
@@ -207,22 +207,22 @@ i2c_filter_top_avalon_mm_monitor_bfm i2c_filter_master_top_avmm_monitor
     assign dut_master1_lost = 1'b0;
     assign dut_master2_lost = 1'b0;
     assign dut_swap_slave_to_master = 1'b0;
-    assign dut_master_scl_in        = dut_swap_slave_to_master ? i2c_if_slv1.SCL : i2c_if_mstr1.SCL;
-    assign dut_master_sda_in        = dut_swap_slave_to_master ? i2c_if_slv1.SDA : i2c_if_mstr1.SDA;
+    assign dut_master_scl_in        = dut_swap_slave_to_master ? i2c_if_ctrl1.SCL : i2c_if_ctrl0.SCL;
+    assign dut_master_sda_in        = dut_swap_slave_to_master ? i2c_if_ctrl1.SDA : i2c_if_ctrl0.SDA;
     assign dut_master_scl_in_2      = i2c_if_mstr2.SCL;
     assign dut_master_sda_in_2      = i2c_if_mstr2.SDA;
-    assign dut_slave_scl_in         = dut_swap_slave_to_master ? i2c_if_mstr1.SCL : i2c_if_slv1.SCL;
-    assign dut_slave_sda_in         = dut_swap_slave_to_master ? i2c_if_mstr1.SDA : i2c_if_slv1.SDA;
-    assign dut_slave_scl_in_2       = i2c_if_slv1.SCL;
-    assign dut_slave_sda_in_2       = i2c_if_slv1.SDA;
-    assign i2c_if_mstr1.SCL         = dut_swap_slave_to_master ? (dut_slave_scl_oe ? 1'b0 : 1'bz) : (dut_master_scl_oe ? 1'b0 : 1'bz);
-    assign i2c_if_mstr1.SDA         = dut_swap_slave_to_master ? (dut_slave_sda_oe ? 1'b0 : 1'bz) : (dut_master_sda_oe ? 1'b0 : 1'bz);
+    assign dut_slave_scl_in         = dut_swap_slave_to_master ? i2c_if_ctrl0.SCL : i2c_if_ctrl1.SCL;
+    assign dut_slave_sda_in         = dut_swap_slave_to_master ? i2c_if_ctrl0.SDA : i2c_if_ctrl1.SDA;
+    assign dut_slave_scl_in_2       = i2c_if_ctrl1.SCL;
+    assign dut_slave_sda_in_2       = i2c_if_ctrl1.SDA;
+    assign i2c_if_ctrl0.SCL         = dut_swap_slave_to_master ? (dut_slave_scl_oe ? 1'b0 : 1'bz) : (dut_master_scl_oe ? 1'b0 : 1'bz);
+    assign i2c_if_ctrl0.SDA         = dut_swap_slave_to_master ? (dut_slave_sda_oe ? 1'b0 : 1'bz) : (dut_master_sda_oe ? 1'b0 : 1'bz);
     assign i2c_if_mstr2.SCL         = dut_master_scl_oe_2 ? 1'b0 : 1'bz;
     assign i2c_if_mstr2.SDA         = dut_master_sda_oe_2 ? 1'b0 : 1'bz;
-    assign i2c_if_slv1.SCL          = dut_swap_slave_to_master ? (dut_master_scl_oe ? 1'b0 : 1'bz) : (dut_slave_scl_oe  ? 1'b0 : 1'bz);
-    assign i2c_if_slv1.SDA          = dut_swap_slave_to_master ? (dut_master_sda_oe ? 1'b0 : 1'bz) : (dut_slave_sda_oe  ? 1'b0 : 1'bz);
-    assign i2c_if_slv1.SCL          = dut_slave_scl_oe_2  ? 1'b0 : 1'bz;
-    assign i2c_if_slv1.SDA          = dut_slave_sda_oe_2  ? 1'b0 : 1'bz;
+    assign i2c_if_ctrl1.SCL          = dut_swap_slave_to_master ? (dut_master_scl_oe ? 1'b0 : 1'bz) : (dut_slave_scl_oe  ? 1'b0 : 1'bz);
+    assign i2c_if_ctrl1.SDA          = dut_swap_slave_to_master ? (dut_master_sda_oe ? 1'b0 : 1'bz) : (dut_slave_sda_oe  ? 1'b0 : 1'bz);
+    assign i2c_if_ctrl1.SCL          = dut_slave_scl_oe_2  ? 1'b0 : 1'bz;
+    assign i2c_if_ctrl1.SDA          = dut_slave_sda_oe_2  ? 1'b0 : 1'bz;
     //assign dut_filter_disable       = relay_sideband_if_1.filter_disable;
     //assign dut_block_disable        = relay_sideband_if_1.block_disable;
     //assign dut_relay_all_addresses  = relay_sideband_if_1.relay_all_addresses;
@@ -371,24 +371,24 @@ initial begin
    // `altr_set_if(virtual signal_watchdog_if, "testbench", "system_reset_watchdog_if", system_reset_watchdog_if)
    // `altr_set_if(virtual signal_watchdog_if, "testbench", "dut_reset_watchdog_if", dut_reset_watchdog_if)
     
-   // `altr_set_if(virtual svt_i2c_if, "testbench", "i2c_if_mstr1", i2c_if_mstr1)
+   // `altr_set_if(virtual svt_i2c_if, "testbench", "i2c_if_ctrl0", i2c_if_ctrl0)
    // `altr_set_if(virtual svt_i2c_if, "testbench", "i2c_if_mstr2", i2c_if_mstr2)
-   // `altr_set_if(virtual svt_i2c_if, "testbench", "i2c_if_slv1", i2c_if_slv1)
+   // `altr_set_if(virtual svt_i2c_if, "testbench", "i2c_if_ctrl1", i2c_if_ctrl1)
    // `altr_set_if(virtual relay_sideband_if, "testbench", "relay_sideband_if_1", relay_sideband_if_1)
    // `altr_set_if(virtual i2c_filter_top_avalon_mm_master_bfm, "testbench", "i2c_filter_master_top_avmm_bfm", i2c_filter_master_top_avmm_bfm)
    // `altr_set_if(virtual i2c_filter_top_avalon_mm_monitor_bfm, "testbench", "i2c_filter_master_top_avmm_monitor", i2c_filter_master_top_avmm_monitor)
-     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env.i2c_system_env_slv1", "vif", i2c_if_slv1);
-     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env.i2c_system_env_mstr1", "vif", i2c_if_mstr1);
+     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env.i2c_system_env_slv1", "vif", i2c_if_ctrl1);
+     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env.i2c_system_env_mstr1", "vif", i2c_if_ctrl0);
       
     // Run the test
     //uvm_pkg::run_test("basic_test");
 end
 
 initial begin
-     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0.i2c_system_env_slv1", "vif", i2c_if_slv1);
-     uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0", "i2c_if_slv1", i2c_if_slv1);
-     uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0", "i2c_if_mstr1", i2c_if_mstr1);
-     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0.i2c_system_env_mstr1", "vif", i2c_if_mstr1);
+     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0.i2c_system_env_slv1", "vif", i2c_if_ctrl1);
+     uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0", "i2c_if_ctrl1", i2c_if_ctrl1);
+     uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0", "i2c_if_ctrl0", i2c_if_ctrl0);
+     //uvm_config_db#(virtual svt_i2c_if)::set(uvm_root::get(), "uvm_test_top.tb_env0.i2c_system_env_mstr1", "vif", i2c_if_ctrl0);
      uvm_config_db#(int)::set(uvm_root::get(), "*", "recording_detail", 1);
 
 end
