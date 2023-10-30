@@ -1,1 +1,8 @@
-##how to run PFR
+##How to setup UVM TB and run sumulation
+
+1.Take a clone
+2.Go to clone dir
+3.run qshell2 pfr_rot_cpld/21.1 (this will source VCS lience)
+3.source set_path.sh
+4.compile the enviornment gmake -f Makefile_VCS.mk build_adp DEBUG=1 DUMP=1 
+5.To run the testcase  gmake -f Makefile_VCS.mk run TESTNAME=basic_bmc_side_rw_test.svh DEBUG=1 DUMP=1
